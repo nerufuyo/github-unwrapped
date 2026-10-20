@@ -75,7 +75,13 @@ export async function fetchRaw(login: string): Promise<RawData> {
   const json = await res.json();
   if (json.errors?.some((e: { type?: string }) => e.type === 'RATE_LIMITED')) throw new RateLimitError('GitHub rate limit reached');
   const u = json.data?.user;
-  if (!u) throw new NotFoundError(`No GitHub user "${login}"`);
+  if (!u) {
+    const errs: { type?: string }[] = json.errors ?? [];
+    if (errs.length === 0 || errs.some((e) => e.type === 'NOT_FOUND')) {
+      throw new NotFoundError(`No GitHub user "${login}"`);
+    }
+    throw new Error('GitHub GraphQL error');
+  }
 
   const c = u.contributionsCollection;
   const days = c.contributionCalendar.weeks
