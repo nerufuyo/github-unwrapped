@@ -27,3 +27,6 @@ a { color: inherit; }
 .share { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .share .dl { display: flex; gap: 4px; align-items: center; font-size: 0.9rem; color: #8b949e; }
 .share .dl a { padding: 6px 10px; background: #21262d; }
+
+.skeleton { background: #21262d; border-radius: 8px; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }

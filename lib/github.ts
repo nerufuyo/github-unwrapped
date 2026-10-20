@@ -4,7 +4,6 @@ export class NotFoundError extends Error {}
 export class RateLimitError extends Error {}
 
 export const YEAR_START = '2026-01-01T00:00:00Z';
-const REVALIDATE = 3600;
 
 const QUERY = `
 query($login: String!, $from: DateTime!, $to: DateTime!) {
@@ -44,7 +43,7 @@ async function fetchCommitHours(login: string): Promise<number[] | null> {
       const q = encodeURIComponent(`author:${login} author-date:>=2026-01-01`);
       const res = await fetch(
         `https://api.github.com/search/commits?q=${q}&sort=author-date&order=desc&per_page=100&page=${page}`,
-        { headers: headers(), next: { revalidate: REVALIDATE } },
+        { headers: headers(), cache: 'no-store' },
       );
       if (!res.ok) return null;
       const json = (await res.json()) as { items: { commit: { author: { date: string } } }[] };
@@ -65,7 +64,7 @@ export async function fetchRaw(login: string): Promise<RawData> {
       method: 'POST',
       headers: { ...headers(), 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: QUERY, variables: { login, from: YEAR_START, to } }),
-      next: { revalidate: REVALIDATE },
+      cache: 'no-store',
     }),
     fetchCommitHours(login),
   ]);

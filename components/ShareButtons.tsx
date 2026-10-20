@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { SHARE_CARD_COUNT } from '@/lib/shareCards';
 
 type CopyState = 'idle' | 'copied' | 'failed';
 
@@ -39,7 +40,7 @@ export default function ShareButtons({ login }: { login: string }) {
       </button>
       <span className="dl">
         Download card:
-        {[1, 2, 3, 4, 5].map((n) => (
+        {Array.from({ length: SHARE_CARD_COUNT }, (_, i) => i + 1).map((n) => (
           <a key={n} href={`/api/card/${encodeURIComponent(login)}/${n}`} download={`${login}-unwrapped-${n}.png`}>
             {n}
           </a>

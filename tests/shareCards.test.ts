@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { pickPersona } from '@/lib/persona';
-import { shareCards } from '@/lib/shareCards';
+import { SHARE_CARD_COUNT, shareCards } from '@/lib/shareCards';
 import { computeStats } from '@/lib/stats';
 import { raw } from './fixture';
 
@@ -16,6 +16,10 @@ describe('shareCards', () => {
       'Busiest day',
       'Your persona',
     ]);
+  });
+
+  it('matches SHARE_CARD_COUNT', () => {
+    expect(cards.length).toBe(SHARE_CARD_COUNT);
   });
 
   it('fills values from stats', () => {

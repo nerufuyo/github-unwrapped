@@ -1,5 +1,7 @@
 import type { Wrapped } from './types';
 
+export const SHARE_CARD_COUNT = 5;
+
 export interface ShareCard {
   title: string;
   big: string;

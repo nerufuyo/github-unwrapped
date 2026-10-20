@@ -9,6 +9,17 @@ export const alt = 'GitHub Unwrapped 2026';
 
 export default async function Image({ params }: { params: Promise<{ user: string }> }) {
   const { user } = await params;
-  const d = await getWrapped(user);
-  return new ImageResponse(shareImage(d, shareCards(d)[0]), size);
+  try {
+    const d = await getWrapped(user);
+    return new ImageResponse(shareImage(d, shareCards(d)[0]), size);
+  } catch {
+    return new ImageResponse(
+      (
+        <div style={{ display: 'flex', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', background: '#0d1117', color: '#fff', fontSize: 72, fontWeight: 700 }}>
+          GitHub Unwrapped 2026
+        </div>
+      ),
+      size,
+    );
+  }
 }
