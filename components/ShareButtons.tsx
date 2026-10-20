@@ -1,19 +1,33 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+type CopyState = 'idle' | 'copied' | 'failed';
+
+const LABEL: Record<CopyState, string> = { idle: 'Copy link', copied: 'Copied!', failed: 'Copy failed' };
 
 export default function ShareButtons({ login }: { login: string }) {
-  const [copied, setCopied] = useState(false);
-  const url = () => `${window.location.origin}/u/${login}`;
+  const [copy, setCopy] = useState<CopyState>('idle');
+  const url = () => `${window.location.origin}/u/${encodeURIComponent(login)}`;
+
+  useEffect(() => {
+    if (copy === 'idle') return;
+    const t = setTimeout(() => setCopy('idle'), 2000);
+    return () => clearTimeout(t);
+  }, [copy]);
 
   return (
     <div className="share" onPointerUp={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
       <button
         onClick={async () => {
-          await navigator.clipboard.writeText(url());
-          setCopied(true);
+          try {
+            await navigator.clipboard.writeText(url());
+            setCopy('copied');
+          } catch {
+            setCopy('failed');
+          }
         }}
       >
-        {copied ? 'Copied!' : 'Copy link'}
+        {LABEL[copy]}
       </button>
       <button
         onClick={() => {
@@ -26,7 +40,7 @@ export default function ShareButtons({ login }: { login: string }) {
       <span className="dl">
         Download card:
         {[1, 2, 3, 4, 5].map((n) => (
-          <a key={n} href={`/api/card/${login}/${n}`} download={`${login}-unwrapped-${n}.png`}>
+          <a key={n} href={`/api/card/${encodeURIComponent(login)}/${n}`} download={`${login}-unwrapped-${n}.png`}>
             {n}
           </a>
         ))}
